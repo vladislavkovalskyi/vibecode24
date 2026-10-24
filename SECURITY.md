@@ -21,7 +21,9 @@ The rule lets processes running as your user run exactly two commands as root wi
 
 sudo matches the full command line, so the rule does not allow `pmset` with other arguments, other programs, or a shell. The practical effect for an attacker who already runs code as your user: they can stop your Mac from sleeping, or let it sleep. They gain nothing else.
 
-Remove the rule at any time in **Settings → Safety → Remove helper rule**, or with:
+While `disablesleep` is on, the app also starts a watchdog: a `/bin/sh` loop that checks every five seconds whether the app process still exists. When the app process disappears, the loop runs `sudo -n /usr/bin/pmset -a disablesleep 0` and exits. The watchdog runs as your user and goes through the same sudoers rule, so it can run only the allowed command that turns sleep back on.
+
+Remove the rule at any time in **Settings → Safety → Lid-closed permission → Remove…**, or with:
 
 ```sh
 sudo rm /etc/sudoers.d/vibecode24
@@ -38,7 +40,7 @@ If the Mac stays awake when it should not, run `sudo pmset -a disablesleep 0`.
 
 ## Reporting a vulnerability
 
-Use GitHub private vulnerability reporting: open the [Security tab](https://github.com/vladyslavkovalskyi/vibecode24/security) and click **Report a vulnerability**, or go straight to [a new advisory](https://github.com/vladyslavkovalskyi/vibecode24/security/advisories/new).
+Use GitHub private vulnerability reporting: open the [Security tab](https://github.com/vladislavkovalskyi/vibecode24/security) and click **Report a vulnerability**, or go straight to [a new advisory](https://github.com/vladislavkovalskyi/vibecode24/security/advisories/new).
 
 Please do not open a public issue for a security problem.
 

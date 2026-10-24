@@ -8,7 +8,8 @@ import VibeCore
 enum Screenshots {
     static func export(to directory: URL) {
         let app = NSApplication.shared
-        app.setActivationPolicy(.prohibited)
+        app.setActivationPolicy(.accessory)
+        app.activate(ignoringOtherApps: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 
         let defaults = UserDefaults(suiteName: "vibecode24.screenshots")!
@@ -76,13 +77,13 @@ enum Screenshots {
 
         let hosting = NSHostingView(rootView: framed)
         hosting.appearance = appearance
-        let window = NSWindow(contentRect: NSRect(x: -10_000, y: -10_000, width: 800, height: 900),
+        let window = KeyWindow(contentRect: NSRect(x: -10_000, y: -10_000, width: 800, height: 900),
                               styleMask: [.borderless], backing: .buffered, defer: false)
         window.isOpaque = false
         window.backgroundColor = .clear
         window.appearance = appearance
         window.contentView = hosting
-        window.orderFrontRegardless()
+        window.makeKeyAndOrderFront(nil)
 
         let size = hosting.fittingSize
         window.setContentSize(size)
@@ -103,6 +104,12 @@ enum Screenshots {
         }
         window.orderOut(nil)
     }
+}
+
+/// A borderless window that can still become key, so controls draw in their active colours.
+private final class KeyWindow: NSWindow {
+    override var canBecomeKey: Bool { true }
+    override var canBecomeMain: Bool { true }
 }
 
 /// The onboarding view with the lid already closed, as it looks a moment after opening.

@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Thanks for the report. If your Mac stays awake when it should not, run `sudo pmset -a disablesleep 0` first, then fill in the form.
-        Security problems go to [private vulnerability reporting](https://github.com/vladyslavkovalskyi/vibecode24/security/advisories/new), not here.
+        Security problems go to [private vulnerability reporting](https://github.com/vladislavkovalskyi/vibecode24/security/advisories/new), not here.
   - type: textarea
     id: what-happened
     attributes:

@@ -13,7 +13,7 @@ Codex CLI and similar) running in a terminal. Goals stated by the owner:
 - Strong, non-generic design, very simple and light to use.
 - Three interface languages: Russian, Ukrainian, English.
 - A great `README.md`; the GitHub repository set up to attract users
-  (personal account `vladyslavkovalskyi`).
+  (personal account `vladislavkovalskyi`).
 - Installable from a `.dmg`.
 - Full creative freedom: research and add useful features.
 

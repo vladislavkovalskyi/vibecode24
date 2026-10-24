@@ -62,9 +62,8 @@ struct PopoverView: View {
                 get: { settings.mode != .off },
                 set: { on in controller.setMode(on ? settings.lastActiveMode : .off) }
             )) { EmptyView() }
-                .toggleStyle(.switch)
-                .tint(Theme.amber)
-                .labelsHidden()
+                .toggleStyle(AmberSwitch(labelSpacing: 0))
+                .fixedSize()
                 .help(L10n.t(.toggleHint))
                 .accessibilityLabel(L10n.t(.toggleHint))
         }

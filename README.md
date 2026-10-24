@@ -10,9 +10,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/vladyslavkovalskyi/vibecode24/releases/latest"><img src="https://img.shields.io/github/v/release/vladyslavkovalskyi/vibecode24?label=release&color=f59e0b" alt="Latest release"></a>
-  <a href="https://github.com/vladyslavkovalskyi/vibecode24/releases"><img src="https://img.shields.io/github/downloads/vladyslavkovalskyi/vibecode24/total?color=f59e0b" alt="Downloads"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/vladyslavkovalskyi/vibecode24" alt="MIT license"></a>
+  <a href="https://github.com/vladislavkovalskyi/vibecode24/releases/latest"><img src="https://img.shields.io/github/v/release/vladislavkovalskyi/vibecode24?label=release&color=f59e0b" alt="Latest release"></a>
+  <a href="https://github.com/vladislavkovalskyi/vibecode24/releases"><img src="https://img.shields.io/github/downloads/vladislavkovalskyi/vibecode24/total?color=f59e0b" alt="Downloads"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/vladislavkovalskyi/vibecode24" alt="MIT license"></a>
   <img src="https://img.shields.io/badge/macOS-14%2B-111111?logo=apple&logoColor=white" alt="macOS 14 or later">
   <img src="https://img.shields.io/badge/Swift-6-F05138?logo=swift&logoColor=white" alt="Swift 6">
 </p>
@@ -25,7 +25,7 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/popover-dark.png">
     <source media="(prefers-color-scheme: light)" srcset="docs/assets/popover-light.png">
-    <img src="docs/assets/popover-light.png" width="380" alt="Vibecode24 popover: Auto mode, two agents running, Mac held awake with the lid closed">
+    <img src="docs/assets/popover-light.png" width="380" alt="Vibecode24 popover: Auto mode, three agents running, the Mac held awake so the lid can close">
   </picture>
 </p>
 
@@ -40,10 +40,12 @@ Vibecode24 keeps the Mac awake with the lid closed for as long as your agents ru
 - **Lid-closed mode.** A closed MacBook stays awake on battery or on power, with no external display.
 - **Auto mode** (default). The Mac stays awake only while a watched agent runs. After the last one exits, a 2-minute grace period passes and sleep comes back.
 - **Always, Timer, Off.** Timer presets: 30 min, 1 h, 2 h, 4 h, 8 h.
-- **Agent radar.** Recognises 15 agent CLIs out of the box, shows CPU use per agent and marks each one as working or idle. You can add your own process names.
+- **Agent radar.** Recognises 17 agent CLIs out of the box, shows a live CPU sparkline per agent and marks each one as working or idle. You can add your own process names.
 - **Idle release.** Optional. Gives sleep back when all agents have sat idle for N minutes, for agents that wait for your input.
-- **Safety guards.** Releases sleep on battery below 15 % (you pick the number) or when macOS reports a critical thermal state. The popover tells you why.
-- **Notifications.** A notification and a sound when an agent finishes.
+- **Safety guards.** Releases sleep on battery below 15 % (you pick the number), when macOS reports a critical thermal state, or, if you choose, whenever the charger is unplugged. The popover tells you why.
+- **Crash watchdog.** A tiny watchdog process outlives the app. If the app dies while holding the Mac awake, sleep comes back within five seconds.
+- **Display off on lid close.** The screen turns off when you close the lid, which also locks the Mac if your password is required right away.
+- **Notifications.** A notification and a sound when an agent finishes, and a summary when you open the lid: how long it was closed and which agents finished meanwhile.
 - **Session stats.** How long the Mac stayed awake, and how much of that time with the lid closed.
 - **Shortcut and URL scheme.** ⌃⌥⌘A toggles from anywhere. `vibecode24://` URLs drive it from scripts.
 - **Launch at login** and an interface in English, Russian and Ukrainian. You can switch the language inside the app.
@@ -58,14 +60,14 @@ Requires macOS 14 Sonoma or later. One universal build runs on Apple silicon and
 
 ### Download
 
-1. Download `Vibecode24-<version>.dmg` from [Releases](https://github.com/vladyslavkovalskyi/vibecode24/releases/latest).
+1. Download `Vibecode24-<version>.dmg` from [Releases](https://github.com/vladislavkovalskyi/vibecode24/releases/latest).
 2. Open the DMG and drag **Vibecode24** to **Applications**.
 3. Launch it and follow the first-launch steps below.
 
 ### Homebrew
 
 ```sh
-brew install --cask vladyslavkovalskyi/tap/vibecode24
+brew install --cask vladislavkovalskyi/tap/vibecode24
 ```
 
 The first-launch steps apply to the Homebrew install too.
@@ -107,7 +109,7 @@ yourname ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 1, /usr/bin/pmset -
 
 `yourname` is your macOS short user name. The app then runs those two commands with `sudo -n`. Because the rule lists full command lines, sudo refuses `pmset` with any other arguments and refuses every other program. The rule lets your user turn sleep off and on, and nothing else.
 
-To remove it, open **Settings → Safety → Remove helper rule**, or run:
+To remove it, open **Settings → Safety → Lid-closed permission → Remove…**, or run:
 
 ```sh
 sudo rm /etc/sudoers.d/vibecode24
@@ -116,7 +118,8 @@ sudo rm /etc/sudoers.d/vibecode24
 ### Sleep always comes back
 
 - **Quit, logout, shutdown, SIGTERM, SIGINT.** The app runs `pmset -a disablesleep 0` before it exits.
-- **Crash or force quit.** The app writes down in a state file that it turned the setting on. On the next launch it finds that record and restores sleep.
+- **Crash or force quit.** While the setting is on, a small watchdog process (`/bin/sh`, started by the app) checks every five seconds that the app is alive. When it is gone, the watchdog runs `sudo -n pmset -a disablesleep 0` and exits. As a second net, the app records that it owns the setting and restores sleep on its next launch.
+- **Someone else changes it.** Every 30 seconds the app compares the real `SleepDisabled` value with what it expects and fixes the difference.
 - **Guards.** Low battery or a critical thermal state releases sleep while the app runs.
 - **Hands off your own setting.** If you turned `disablesleep` on yourself, outside the app, Vibecode24 never turns it off.
 
@@ -146,11 +149,19 @@ sudo pmset -a disablesleep 0
 | Droid | `droid` |
 | Kiro | `kiro-cli` |
 | Cline | `cline` |
+| Continue CLI | `cn` |
 | Auggie | `auggie` |
+| Kilo Code | `kilo` |
 
-The radar reads the process table every few seconds through `libproc`, without spawning `ps`. It matches the executable name and, for tools written in Node or Python, the script path in the arguments. You can switch any agent off in **Settings → Agents**.
+The radar reads the process table every three seconds through `libproc`, without spawning `ps`. It matches `argv[0]`, the executable path and, for tools written in Node or Python, the script path. Helper processes such as `claude --chrome-native-host` or `codex app-server` are ignored. A Node wrapper and the native binary it starts count as one session, and the CPU of everything an agent spawns (builds, tests) counts towards that agent. You can switch any agent off in **Settings → Agents**.
 
-Running something else? Add its process name in **Settings → Agents**, or [ask for it to be added](https://github.com/vladyslavkovalskyi/vibecode24/issues/new?template=new_agent.yml).
+To see what the radar sees right now:
+
+```sh
+/Applications/Vibecode24.app/Contents/MacOS/Vibecode24 --scan
+```
+
+Running something else? Add its process name in **Settings → Agents**, or [ask for it to be added](https://github.com/vladislavkovalskyi/vibecode24/issues/new?template=new_agent.yml).
 
 ## Automation
 
@@ -190,7 +201,7 @@ It can. A closed MacBook running an agent still produces heat, and a bag traps i
 
 ### What does it do to the battery?
 
-The Mac stays awake, so it drains the battery as it would with the lid open and the screen off. On battery below 15 %, Vibecode24 releases and macOS sleeps as usual. You can change the threshold in **Settings → Safety**.
+The Mac stays awake, so it drains the battery as it would with the lid open and the screen off. On battery below 15 %, Vibecode24 releases and macOS sleeps as usual. You can change the threshold in **Settings → Safety**, or turn on **Only when connected to power**.
 
 ### Do I need an external display?
 
@@ -198,7 +209,7 @@ No. Apple's clamshell mode needs a display, a keyboard and power. Vibecode24 kee
 
 ### Does it keep the screen on?
 
-No. Vibecode24 prevents system sleep. The display still sleeps on its normal schedule.
+Not unless you ask. Vibecode24 prevents system sleep, and the display still sleeps on its normal schedule. Turn on **Keep the display on while awake** in **Settings → General** if you want to watch the agent work. When you close the lid, the display turns off right away.
 
 ### Does it work on Intel Macs?
 
@@ -210,7 +221,7 @@ Notarization requires a paid Apple Developer Program membership. Vibecode24 is a
 
 ### How do I uninstall it?
 
-1. Open **Settings → Safety** and click **Remove helper rule**.
+1. Open **Settings → Safety** and click **Remove…** next to **Lid-closed permission**.
 2. Quit Vibecode24 from its menu. Quitting restores sleep.
 3. Delete `/Applications/Vibecode24.app`, or run `brew uninstall --cask vibecode24`.
 4. Check that `/etc/sudoers.d/vibecode24` is gone. If it is still there, run `sudo rm /etc/sudoers.d/vibecode24`.
@@ -222,9 +233,10 @@ If you deleted the app while it held the Mac awake, run `sudo pmset -a disablesl
 You need macOS 14 or later and Xcode 16 (or a Swift 6 toolchain).
 
 ```sh
-git clone https://github.com/vladyslavkovalskyi/vibecode24.git
+git clone https://github.com/vladislavkovalskyi/vibecode24.git
 cd vibecode24
 swift test                 # run the tests
+swift run Vibecode24 --scan  # print the agents the radar sees
 scripts/build-app.sh       # build a universal, ad-hoc signed Vibecode24.app
 scripts/make-dmg.sh        # wrap it in Vibecode24-<version>.dmg
 ```

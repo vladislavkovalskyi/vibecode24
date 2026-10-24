@@ -30,7 +30,7 @@ This Code of Conduct applies within all community spaces of this project (issues
 
 ## Enforcement
 
-To report abusive, harassing or otherwise unacceptable behavior, open a [private security advisory](https://github.com/vladyslavkovalskyi/vibecode24/security/advisories/new) or contact the maintainer, [@vladyslavkovalskyi](https://github.com/vladyslavkovalskyi), via GitHub. Please do not report it in a public issue.
+To report abusive, harassing or otherwise unacceptable behavior, open a [private security advisory](https://github.com/vladislavkovalskyi/vibecode24/security/advisories/new) or contact the maintainer, [@vladislavkovalskyi](https://github.com/vladislavkovalskyi), via GitHub. Please do not report it in a public issue.
 
 The maintainer will review every report promptly and fairly, and will respect the privacy and security of the reporter.
 

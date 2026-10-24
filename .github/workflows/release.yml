@@ -57,9 +57,9 @@ jobs:
           body: |
             **SHA-256** (`Vibecode24-${{ steps.version.outputs.version }}.dmg`): `${{ steps.checksum.outputs.sha256 }}`
 
-            The app is signed ad hoc and not notarized. On first launch, right-click
-            Vibecode24 in Applications and choose **Open**, or allow it in
-            System Settings → Privacy & Security.
+            The app is signed ad hoc and not notarized. On first launch macOS blocks it:
+            open **System Settings → Privacy & Security** and click **Open Anyway**, or run
+            `xattr -dr com.apple.quarantine /Applications/Vibecode24.app`.
           files: |
             dist/Vibecode24-${{ steps.version.outputs.version }}.dmg
             dist/Vibecode24-${{ steps.version.outputs.version }}.dmg.sha256

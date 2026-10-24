@@ -18,6 +18,7 @@ struct SettingsView: View {
         }
         .frame(width: 540, height: 520)
         .tint(Theme.amber)
+        .toggleStyle(AmberSwitch())
     }
 }
 
@@ -65,6 +66,7 @@ struct GeneralPane: View {
             }
         }
         .formStyle(.grouped)
+        .toggleStyle(AmberSwitch())
     }
 }
 
@@ -147,6 +149,7 @@ struct AgentsPane: View {
             }
         }
         .formStyle(.grouped)
+        .toggleStyle(AmberSwitch())
     }
 
     private func addCommand() {
@@ -234,6 +237,7 @@ struct SafetyPane: View {
             }
         }
         .formStyle(.grouped)
+        .toggleStyle(AmberSwitch())
         .onAppear { controller.refreshHelperState() }
     }
 
@@ -270,7 +274,7 @@ struct AboutPane: View {
             Text(L10n.t(.aboutLidTotal, L10n.duration(controller.stats.totalLidClosed)))
                 .font(.system(size: 12)).monospacedDigit()
             HStack(spacing: 16) {
-                Link(L10n.t(.aboutSource), destination: URL(string: "https://github.com/vladyslavkovalskyi/vibecode24")!)
+                Link(L10n.t(.aboutSource), destination: URL(string: "https://github.com/vladislavkovalskyi/vibecode24")!)
                 Button(L10n.t(.clearHistory)) { controller.clearHistory() }
                     .buttonStyle(.link)
             }

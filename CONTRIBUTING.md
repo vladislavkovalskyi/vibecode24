@@ -7,15 +7,24 @@ Thanks for helping. Bug reports, new agents, translations and fixes are all welc
 You need macOS 14 or later and Xcode 16 (or a Swift 6 toolchain).
 
 ```sh
-git clone https://github.com/vladyslavkovalskyi/vibecode24.git
+git clone https://github.com/vladislavkovalskyi/vibecode24.git
 cd vibecode24
 swift build                # compile
 swift test                 # run the tests
+swift run Vibecode24 --scan  # print the agents the radar sees
 scripts/build-app.sh       # build a universal, ad-hoc signed Vibecode24.app
 scripts/make-dmg.sh        # wrap it in a DMG
 ```
 
 You can open `Package.swift` in Xcode to work on the UI with previews.
+
+If the repository sits in an iCloud-synced folder such as `~/Documents`, build and test outside it:
+
+```sh
+swift test --scratch-path ~/Library/Caches/vibecode24-build
+```
+
+iCloud adds Finder attributes to files in the default `.build` folder, and codesign then fails on the test bundle.
 
 Testing lid-closed mode changes a system-wide power setting. If a debug build leaves it on, run `sudo pmset -a disablesleep 0`.
 
@@ -44,10 +53,11 @@ The built-in agent list lives in `Sources/VibeCore/AgentCatalog.swift`.
    A native binary shows its own name in `comm`. A Node or Python tool shows `node` or `python3` in `comm`, and the script path in `args`.
 2. Add an entry to `AgentCatalog.swift` that follows the shape of the existing ones: a stable id, the display name, the executable names to match, and, for Node or Python tools, a fragment of the script path that identifies the agent.
 3. Pick names that do not catch unrelated processes. `amp` as a script path fragment would match too much; `@sourcegraph/amp` would not.
-4. Add a test in `Tests/VibeCoreTests` with a sample `comm` and `args` for the new agent, and one that must not match.
-5. Add the agent to the "Supported agents" table in `README.md`, `README.ru.md` and `README.uk.md`.
+4. Add a test to `Tests/VibeCoreTests/AgentMatcherTests.swift` with a sample `comm` and `args` for the new agent, and one that must not match.
+5. Start the agent and run `swift run Vibecode24 --scan`. The new agent should appear in the list, and unrelated processes should not.
+6. Add the agent to the "Supported agents" table in `README.md`, `README.ru.md` and `README.uk.md`.
 
-If you only want an agent supported and don't plan to write the code, open a [new agent request](https://github.com/vladyslavkovalskyi/vibecode24/issues/new?template=new_agent.yml) instead.
+If you only want an agent supported and don't plan to write the code, open a [new agent request](https://github.com/vladislavkovalskyi/vibecode24/issues/new?template=new_agent.yml) instead.
 
 ## Adding or fixing a translation
 

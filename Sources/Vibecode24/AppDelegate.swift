@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         for url in urls where url.scheme == "vibecode24" {
             let command = (url.host ?? url.path).lowercased().trimmingCharacters(in: CharacterSet(charactersIn: "/"))
             switch command {
-            case "on": controller.setMode(controller.settings.lastActiveMode)
+            case "on": controller.setMode(.always)
             case "off": controller.setMode(.off)
             case "auto": controller.setMode(.auto)
             case "always": controller.setMode(.always)

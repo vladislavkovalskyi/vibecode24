@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions and ideas
-    url: https://github.com/vladyslavkovalskyi/vibecode24/discussions
+    url: https://github.com/vladislavkovalskyi/vibecode24/discussions
     about: Ask how something works, share a setup or discuss an idea.
   - name: Security vulnerability
-    url: https://github.com/vladyslavkovalskyi/vibecode24/security/advisories/new
+    url: https://github.com/vladislavkovalskyi/vibecode24/security/advisories/new
     about: Report security problems privately, not in a public issue.

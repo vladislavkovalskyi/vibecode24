@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         To ask for support for another agent CLI, use the **New agent** form instead.
-        For open-ended ideas, [Discussions](https://github.com/vladyslavkovalskyi/vibecode24/discussions) is a better place.
+        For open-ended ideas, [Discussions](https://github.com/vladislavkovalskyi/vibecode24/discussions) is a better place.
   - type: textarea
     id: problem
     attributes:

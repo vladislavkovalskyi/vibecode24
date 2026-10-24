@@ -28,3 +28,33 @@ extension View {
         font(.system(size: 11, weight: .semibold)).foregroundStyle(.secondary)
     }
 }
+
+/// A switch in the app's accent. The system switch ignores `.tint` in some contexts, and the
+/// accent is the one place the app's colour shows, so it is drawn here.
+struct AmberSwitch: ToggleStyle {
+    var labelSpacing: CGFloat = 12
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: labelSpacing) {
+            configuration.label
+            Spacer(minLength: 0)
+            ZStack(alignment: configuration.isOn ? .trailing : .leading) {
+                Capsule()
+                    .fill(configuration.isOn ? Theme.led : Color.primary.opacity(0.16))
+                    .overlay(Capsule().strokeBorder(Color.black.opacity(configuration.isOn ? 0.08 : 0.04), lineWidth: 0.5))
+                Circle()
+                    .fill(Color.white)
+                    .shadow(color: .black.opacity(0.25), radius: 1, y: 0.5)
+                    .padding(2)
+            }
+            .frame(width: 34, height: 20)
+            .contentShape(Capsule())
+            .onTapGesture { configuration.isOn.toggle() }
+            .animation(.easeInOut(duration: 0.18), value: configuration.isOn)
+            .accessibilityElement()
+            .accessibilityAddTraits(.isButton)
+            .accessibilityValue(configuration.isOn ? "on" : "off")
+            .accessibilityAction { configuration.isOn.toggle() }
+        }
+    }
+}

@@ -18,7 +18,7 @@ cd "$REPO_ROOT"
 
 APP_NAME="Vibecode24"
 PRODUCT="Vibecode24"
-BUNDLE_ID="com.vladyslavkovalskyi.vibecode24"
+BUNDLE_ID="com.vladislavkovalskyi.vibecode24"
 PACKAGE_DIR="${PACKAGE_DIR:-$REPO_ROOT}"
 OUTPUT_DIR="${OUTPUT_DIR:-$REPO_ROOT/build}"
 ICON_FILE="$REPO_ROOT/Assets/AppIcon.icns"
