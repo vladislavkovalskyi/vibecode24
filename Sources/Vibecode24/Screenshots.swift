@@ -61,18 +61,23 @@ enum Screenshots {
                appearance: .darkAqua, corner: 12, to: directory.appendingPathComponent("settings-safety.png"))
         render(OnboardingPreview(controller: controller), appearance: .darkAqua, corner: 14,
                to: directory.appendingPathComponent("onboarding.png"))
+        L10n.override = .en
+        let icon = NSImage(contentsOf: directory.appendingPathComponent("icon.png"))
+        render(SocialCard(controller: controller, icon: icon), appearance: .darkAqua, corner: 0,
+               to: directory.appendingPathComponent("social-preview.png"), framed: false)
         L10n.override = nil
         print("Screenshots written to \(directory.path)")
     }
 
-    private static func render<V: View>(_ view: V, appearance name: NSAppearance.Name, corner: CGFloat, to url: URL) {
+    private static func render<V: View>(_ view: V, appearance name: NSAppearance.Name, corner: CGFloat, to url: URL,
+                                        framed isFramed: Bool = true) {
         let appearance = NSAppearance(named: name)!
         let framed = view
-            .background(Color(nsColor: .windowBackgroundColor))
+            .background(isFramed ? Color(nsColor: .windowBackgroundColor) : .clear)
             .clipShape(RoundedRectangle(cornerRadius: corner, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: corner, style: .continuous)
-                .strokeBorder(Color.primary.opacity(0.12), lineWidth: 1))
-            .padding(1)
+                .strokeBorder(Color.primary.opacity(isFramed ? 0.12 : 0), lineWidth: 1))
+            .padding(isFramed ? 1 : 0)
             .environment(\.colorScheme, name == .darkAqua ? .dark : .light)
 
         let hosting = NSHostingView(rootView: framed)
@@ -110,6 +115,53 @@ enum Screenshots {
 private final class KeyWindow: NSWindow {
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { true }
+}
+
+/// 1280 × 640 card for the repository's social preview.
+private struct SocialCard: View {
+    var controller: AwakeController
+    var icon: NSImage?
+    private let popoverScale: CGFloat = 0.74
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading, spacing: 10) {
+                if let icon {
+                    Image(nsImage: icon).resizable().frame(width: 64, height: 64)
+                        .padding(.leading, -6)
+                }
+                Text("Vibecode24")
+                    .font(.system(size: 34, weight: .semibold))
+                    .tracking(-0.8)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Close the lid.").foregroundStyle(Color(white: 0.96))
+                    Text("Your agents keep working.").foregroundStyle(Color(white: 0.56))
+                }
+                .font(.system(size: 18, weight: .medium))
+                .tracking(-0.2)
+                Text("Claude Code, Codex, Gemini CLI, Aider and 13 more agents")
+                    .font(.system(size: 10.5, weight: .medium))
+                    .foregroundStyle(Color(white: 0.5))
+                    .padding(.top, 4)
+            }
+            .frame(width: 290, alignment: .leading)
+            .padding(.leading, 40)
+            Spacer(minLength: 0)
+            PopoverView(controller: controller)
+                .background(Color(nsColor: .windowBackgroundColor))
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .strokeBorder(Color.white.opacity(0.12), lineWidth: 1))
+                .fixedSize()
+                .scaleEffect(popoverScale)
+                .frame(width: Theme.popoverWidth * popoverScale, height: 296)
+                .shadow(color: .black.opacity(0.45), radius: 18, y: 8)
+                .padding(.trailing, 36)
+        }
+        .frame(width: 640, height: 320)
+        .background(Color(red: 0.07, green: 0.063, blue: 0.05))
+        .environment(\.colorScheme, .dark)
+    }
 }
 
 /// The onboarding view with the lid already closed, as it looks a moment after opening.

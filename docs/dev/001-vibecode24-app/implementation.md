@@ -45,3 +45,14 @@ scripts/                 icon, DMG background, app bundle, DMG
   input, so "Allow sleep when agents are idle" is off by default.
 - Building inside an iCloud-synced folder needs `--scratch-path` outside it: iCloud adds
   Finder attributes and `codesign` refuses the test bundle.
+
+## Published (2026-10-24)
+
+- Repository: https://github.com/vladislavkovalskyi/vibecode24 (description, 20 topics,
+  Discussions on, wiki and projects off, private vulnerability reporting on).
+- Release `v0.1.0` built by the Release workflow; the DMG was downloaded back, its SHA-256
+  checked, signature verified and `--scan` run from the mounted image.
+- Homebrew: `Casks/vibecode24.rb` in `vladislavkovalskyi/homebrew-tap`; `brew audit --cask
+  --online --strict` passes.
+- `docs/assets/social-preview.png` (1280 × 640) is rendered by `--export-screenshots`. GitHub has
+  no API for the social preview, so it is uploaded by hand in the repository settings.
