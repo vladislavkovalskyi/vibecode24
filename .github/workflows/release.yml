@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build DMG and publish release
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Full history: the build number is the commit count.
+          fetch-depth: 0
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Install create-dmg
+        run: brew install create-dmg
+
+      - name: Version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Test
+        run: swift test
+
+      - name: Build app and DMG
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DMG_LAYOUT_TIMEOUT: "300"
+        run: scripts/make-dmg.sh
+
+      - name: Checksum
+        id: checksum
+        run: |
+          cd dist
+          dmg="Vibecode24-${{ steps.version.outputs.version }}.dmg"
+          shasum -a 256 "$dmg" > "$dmg.sha256"
+          cat "$dmg.sha256"
+          echo "sha256=$(cut -d ' ' -f 1 "$dmg.sha256")" >> "$GITHUB_OUTPUT"
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Vibecode24 ${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.version.outputs.version, '-') }}
+          body: |
+            **SHA-256** (`Vibecode24-${{ steps.version.outputs.version }}.dmg`): `${{ steps.checksum.outputs.sha256 }}`
+
+            The app is signed ad hoc and not notarized. On first launch, right-click
+            Vibecode24 in Applications and choose **Open**, or allow it in
+            System Settings → Privacy & Security.
+          files: |
+            dist/Vibecode24-${{ steps.version.outputs.version }}.dmg
+            dist/Vibecode24-${{ steps.version.outputs.version }}.dmg.sha256
+          fail_on_unmatched_files: true
