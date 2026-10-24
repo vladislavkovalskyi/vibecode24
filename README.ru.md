@@ -70,7 +70,7 @@ Vibecode24 не даёт Mac уснуть с закрытой крышкой, п
 brew install --cask vladislavkovalskyi/tap/vibecode24
 ```
 
-Шаги первого запуска нужны и после установки через Homebrew.
+Cask сам снимает флаг карантина, поэтому после установки через Homebrew шаг с Gatekeeper ниже не нужен.
 
 ### Первый запуск
 

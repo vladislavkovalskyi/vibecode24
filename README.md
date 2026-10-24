@@ -70,7 +70,7 @@ Requires macOS 14 Sonoma or later. One universal build runs on Apple silicon and
 brew install --cask vladislavkovalskyi/tap/vibecode24
 ```
 
-The first-launch steps apply to the Homebrew install too.
+The cask clears the quarantine flag for you, so a Homebrew install opens without the Gatekeeper step below.
 
 ### First launch
 
