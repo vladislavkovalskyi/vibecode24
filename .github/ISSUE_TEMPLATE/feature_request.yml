@@ -1,0 +1,36 @@
+name: Feature request
+description: Suggest a new feature or a change to an existing one.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        To ask for support for another agent CLI, use the **New agent** form instead.
+        For open-ended ideas, [Discussions](https://github.com/vladyslavkovalskyi/vibecode24/discussions) is a better place.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: The situation you are in and what gets in your way.
+      placeholder: I run agents over SSH from my phone, and I want to start a timer without opening the laptop.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How you would like Vibecode24 to handle it.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Workarounds you use today, or other tools that solve it.
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to implement this myself.

@@ -1,0 +1,98 @@
+name: Bug report
+description: Something does not work as described.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. If your Mac stays awake when it should not, run `sudo pmset -a disablesleep 0` first, then fill in the form.
+        Security problems go to [private vulnerability reporting](https://github.com/vladyslavkovalskyi/vibecode24/security/advisories/new), not here.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+      placeholder: I closed the lid with Claude Code running in Auto mode. The Mac slept after about a minute.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Set the mode to Auto
+        2. Start `claude` in Terminal
+        3. Close the lid on battery
+    validations:
+      required: true
+  - type: input
+    id: app-version
+    attributes:
+      label: Vibecode24 version
+      description: In Finder, select Vibecode24.app and choose File → Get Info.
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: macos-version
+    attributes:
+      label: macOS version
+      placeholder: macOS 15.1
+    validations:
+      required: true
+  - type: dropdown
+    id: chip
+    attributes:
+      label: Mac
+      options:
+        - Apple silicon
+        - Intel
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options:
+        - Auto
+        - Always
+        - Timer
+        - Off
+        - Not sure
+    validations:
+      required: true
+  - type: dropdown
+    id: power
+    attributes:
+      label: Power and display
+      multiple: true
+      options:
+        - On battery
+        - On power adapter
+        - External display connected
+        - No external display
+  - type: dropdown
+    id: install
+    attributes:
+      label: Installed from
+      options:
+        - DMG from Releases
+        - Homebrew
+        - Built from source
+  - type: textarea
+    id: pmset
+    attributes:
+      label: Sleep state
+      description: Output of these two commands.
+      value: |
+        $ pmset -g | grep -i sleep
+
+        $ ls -l /etc/sudoers.d/vibecode24
+
+      render: text
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else
+      description: Screenshots, logs from Console.app (filter by "Vibecode24"), the agent you were running.

@@ -1,0 +1,61 @@
+name: New agent
+description: Ask Vibecode24 to recognise another AI coding agent CLI.
+title: "[Agent] "
+labels: ["agent"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Vibecode24 matches agents by process name and, for Node or Python tools, by the script path in the arguments.
+        Until support ships, you can add the process name yourself in **Settings → Agents**.
+  - type: input
+    id: name
+    attributes:
+      label: Agent name
+      placeholder: Example Agent
+    validations:
+      required: true
+  - type: input
+    id: homepage
+    attributes:
+      label: Homepage or repository
+      placeholder: https://github.com/example/agent
+    validations:
+      required: true
+  - type: textarea
+    id: launch
+    attributes:
+      label: How you launch it
+      description: The command you type, and how you installed it (npm, pip, uv, Homebrew, curl script, binary).
+      placeholder: |
+        Installed with `npm install -g example-agent`
+        Started with `example` in the project folder
+    validations:
+      required: true
+  - type: textarea
+    id: ps
+    attributes:
+      label: Process name from ps
+      description: Start the agent, then run this in another terminal and paste the lines that belong to it.
+      value: |
+        $ ps -axo pid,comm,args | grep -i <agent>
+
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: idle
+    attributes:
+      label: Does it wait for input between tasks?
+      description: Helps tune the idle detection.
+      options:
+        - "Yes, it is interactive"
+        - "No, it runs one task and exits"
+        - Both modes exist
+        - Not sure
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to add it to `AgentCatalog.swift` myself.
